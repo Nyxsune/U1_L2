@@ -19,8 +19,7 @@ class Rat:
       return True
   
   def __str__(self):
-    out = f"Sex: {self.sex} Weight: {self.weight}"
-    return out
+    return str(self.weight)
   
   def __repr__(self):
     return str(self.weight)

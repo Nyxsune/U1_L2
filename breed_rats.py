@@ -86,6 +86,7 @@ def mutate(pups):
 def select(rats, pups):
   best = [[], []]
   daBiggest = pups[0][0]
+  daSmallest = pups[0][1]
   total = [[], []]
   for i in range(2):
     for pup in pups[i]:
@@ -104,11 +105,13 @@ def select(rats, pups):
             biggest = pup
           if pup > daBiggest:
             daBiggest = pup
+          if pup < daSmallest:
+            daSmallest = pup
       index = total[i].index(biggest)
       total[i].pop(index)
       best[i].append(biggest)
 
-  return best,  daBiggest
+  return best, daBiggest, daSmallest
 '''
 def select(rats, pups):
   rats = [[],[]]

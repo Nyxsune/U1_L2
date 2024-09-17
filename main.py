@@ -1,19 +1,20 @@
 '''
 Connor Cox
-U1L1
-Chunky Rat Borl (Boy Girl)
+U1L2
+Plot them
 '''
 from rat import Rat
 import breed_rats as BR
-import time
+import matplotlib.pyplot as plt
+
 
 def breed():
   generations = 0
   rats = BR.initial_population()
   means = []
-  daBiggest = 0
+  daBiggests = []
+  daSmallests = []
   fitness = False
-  speed = time.time() 
   while fitness == False:
     generations += 1  
     pups = BR.breed(rats)
@@ -21,40 +22,67 @@ def breed():
     mean = BR.calculate_mean(rats)
     fitness = BR.fitness(mean)
     means.append(mean)
-    rats, daBiggest = BR.select(rats, pups)
+    rats, daBiggest, daSmallest = BR.select(rats, pups)
+    daBiggests.append(daBiggest)
+    daSmallests.append(daSmallest)
     if generations == 500:
       break
-  newSpeed = time.time()
-  speed = newSpeed - speed
-  return generations, means, daBiggest, speed, mean
+  return means, daBiggests, daSmallests
 
-def prettyMeans(means):
-  meanss = ''
-  for mean in means:
-    meanss += str(mean)
-    meanss += " "
-  
-  return meanss
+def turnFiles():
+  means, daBiggests, daSmallests = breed()
+  cycle = [means, daBiggests, daSmallests]
+  txtNums = ['', '', '']
+  names = ["means.txt", "biggests.txt", "smallests.txt"]
+  i = 0
+  for listt in cycle:
+    for rat in listt:
+      txtNums[i] += str(rat)
+      txtNums[i] += ", "
+    path = names[i]
+    with open(path, 'w') as file:
+      file.write(txtNums[i])
+    i += 1
 
 def main():
-  generations, means, daBiggest, speed, finalMean = breed()
-  means = prettyMeans(means)
-  print(f"""
-  ~~~~~~~~~~~~Results~~~~~~~~~~~~
+  turnFiles()
+  files = ["biggests.txt", "means.txt", "smallests.txt"]
+  lists = ['', '', '']
+  i = 0
+  for filee in files:
+    path = filee
+    with open(path, 'r') as file:
+      contents = file.read()
+    lists[i] = contents
+    i += 1
 
-  Final Population Mean: {finalMean}
+  h = 0
+  for listt in lists:
+    lists[h] = listt.split(", ")
+    h += 1
 
-  Generations: {generations}
-  Experiment Duration: {int(generations / 10)} years
-  Simulation Duration: {speed} seconds
+  for listt in lists:
+    for f in range(len(listt)):
+      try:
+        listt[f] = int(listt[f])
+      except:
+        pass
+    del listt[-1]
 
-  Da Biggest Boy/Girl:
-  {daBiggest}
+  colors = ["#fb00ff", "#00fbff", "#ffee00"]
+  j = 0
+  for dataset in lists:
+    plt.plot(dataset, color = colors[j])
 
-  Generation Weight Averages (grams)
+    plt.title("Rat Growth")
+    plt.xlabel("Generation")
+    plt.ylabel("Rat Weight (Grams)")
 
-  {means}
-  """)
+    plt.legend(files)
+    plt.savefig('Rat_Graph.png')
+
+    j += 1
+
 
 if __name__ == "__main__":
   main()
